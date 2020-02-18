@@ -31,9 +31,14 @@ public class FileChoiceRecorder {
     private static final String EXCEL_KEY = "ZIH.Excel";
     /**
      * Registry key for the
-     * {@link GUI.MainSceneController#repeatingRows repeatingRows} boolean.
+     * {@link GUI.MainSceneController#repeatingRows repeatingRowsForms} boolean.
      */
-    private static final String REPETITION_KEY = "ZIH.Repetition";
+    private static final String REPETITION_KEY_FORMS = "ZIH.RepetitionForms";
+    /**
+     * Registry key for the
+     * {@link GUI.MainSceneController#repeatingRows repeatingRowsEvents} boolean.
+     */
+    private static final String REPETITION_KEY_EVENTS = "ZIH.RepetitionEvents";
     /**
      * Registry key for the
      * {@link GUI.MainSceneController#defaultValues defaultValues} boolean.
@@ -44,7 +49,7 @@ public class FileChoiceRecorder {
      * Lets other classes know if there is already a registry entry.
      */
     private boolean exists;
-    private String dataDir, instrumentDir, excelDir, repeatingRows, defaultValues;
+    private String dataDir, instrumentDir, excelDir, repeatingRowsForms, repeatingRowsEvents, defaultValues;
     private Preferences userPref;
 
     /**
@@ -72,7 +77,8 @@ public class FileChoiceRecorder {
         userPref.put(DATA_KEY, getDataDir());
         userPref.put(INSTRUMENT_KEY, getInstrumentDir());
         userPref.put(EXCEL_KEY, getExcelDir());
-        userPref.put(REPETITION_KEY, getRepeatingRows());
+        userPref.put(REPETITION_KEY_FORMS, getRepeatingRowsForms());
+        userPref.put(REPETITION_KEY_EVENTS, getRepeatingRowsEvents());
         userPref.put(DEFAULT_KEY, getDefaultValues());
     }
 
@@ -90,7 +96,8 @@ public class FileChoiceRecorder {
         setDataDir(userPref.get(DATA_KEY, null));
         setInstrumentDir(userPref.get(INSTRUMENT_KEY, null));
         setExcelDir(userPref.get(EXCEL_KEY, null));
-        setRepeatingRows(userPref.get(REPETITION_KEY, null));
+        setRepeatingRowsForms(userPref.get(REPETITION_KEY_FORMS, null));
+        setRepeatingRowsEvents(userPref.get(REPETITION_KEY_EVENTS, null));
         setDefaultValues(userPref.get(DEFAULT_KEY, null));
     }
 
@@ -106,8 +113,12 @@ public class FileChoiceRecorder {
         return excelDir;
     }
 
-    public String getRepeatingRows() {
-        return repeatingRows;
+    public String getRepeatingRowsForms() {
+        return repeatingRowsForms;
+    }
+    
+    public String getRepeatingRowsEvents() {
+        return repeatingRowsEvents;
     }
 
     public String getDefaultValues() {
@@ -126,8 +137,12 @@ public class FileChoiceRecorder {
         this.excelDir = excelDir;
     }
 
-    public void setRepeatingRows(String repeatingRows) {
-        this.repeatingRows = repeatingRows;
+    public void setRepeatingRowsForms(String repeatingRowsForms) {
+        this.repeatingRowsForms = repeatingRowsForms;
+    }
+    
+    public void setRepeatingRowsEvents(String repeatingRowsEvents) {
+        this.repeatingRowsEvents = repeatingRowsEvents;
     }
 
     public void setDefaultValues(String defaultValues) {

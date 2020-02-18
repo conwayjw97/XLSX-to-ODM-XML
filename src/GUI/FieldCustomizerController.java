@@ -68,7 +68,6 @@ public class FieldCustomizerController implements Initializable {
     private DataDictionaryParser dictionaryParser;
     private MenuTracker menuTracker;
     private ProgressFileHandler progressFileHandler;
-    private File excelFile;
     private HashMap<String, ObservableList> eventToFormsList, formToVariablesList;
     private int globalIndex;
     private boolean notBound, repeatingRows, defaultValues;
@@ -101,7 +100,7 @@ public class FieldCustomizerController implements Initializable {
      * <p>
      * Had to be implemented as part of a class that implements Initializable.
      *
-     * @param url Unused.
+     * @param url Unused.a
      * @param rb Unused.
      */
     @Override
@@ -1013,10 +1012,6 @@ public class FieldCustomizerController implements Initializable {
 
     public void setDataDictionaryParser(DataDictionaryParser dictionaryParser) {
         this.dictionaryParser = dictionaryParser;
-    }
-
-    public void setExcelFile(File excelFile) {
-        this.excelFile = excelFile;
     }
 
     public void setRepeatingRows(boolean repeatingRows) {

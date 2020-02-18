@@ -46,7 +46,7 @@ public class MainSceneController implements Initializable {
     private ExcelParser excelParser;
     private InstrumentDesigParser instrumentParser;
     private DataDictionaryParser dataDicionaryParser;
-    private boolean repeatingRows = true, defaultValues = false;
+    private boolean repeatingRowsForms = true, repeatingRowsEvents = false, defaultValues = false;
 
     @FXML
     private TextField dataDictionaryField;
@@ -67,7 +67,9 @@ public class MainSceneController implements Initializable {
     @FXML
     private CheckMenuItem debugCheck;
     @FXML
-    private ToggleButton rowSelector;
+    private ToggleButton rowSelectorForms;
+    @FXML
+    private ToggleButton rowSelectorEvents;
     @FXML
     private ToggleButton columnSelector;
     @FXML
@@ -159,7 +161,8 @@ public class MainSceneController implements Initializable {
             fileRecorder.setDataDir(dataFile.getAbsolutePath());
             fileRecorder.setInstrumentDir(instrumentFile.getAbsolutePath());
             fileRecorder.setExcelDir(excelFile.getAbsolutePath());
-            fileRecorder.setRepeatingRows(String.valueOf(repeatingRows));
+            fileRecorder.setRepeatingRowsForms(String.valueOf(repeatingRowsForms));
+            fileRecorder.setRepeatingRowsEvents(String.valueOf(repeatingRowsEvents));
             fileRecorder.setDefaultValues(String.valueOf(defaultValues));
             fileRecorder.writeToRegistry();
             beginButton.setDisable(false);
@@ -261,8 +264,8 @@ public class MainSceneController implements Initializable {
             fieldCusController.setInstrumentParser(instrumentParser);
             fieldCusController.setExcelParser(excelParser);
             fieldCusController.setDataDictionaryParser(dataDicionaryParser);
-            fieldCusController.setExcelFile(excelFile);
-            fieldCusController.setRepeatingRows(repeatingRows);
+            fieldCusController.setRepeatingRowsForms(repeatingRowsForms);
+            fieldCusController.setRepeatingRowsEvents(repeatingRowsEvents);
             fieldCusController.setDefaultValues(defaultValues);
             fieldCusController.begin();
 
@@ -292,12 +295,21 @@ public class MainSceneController implements Initializable {
             instrumentFile = new File(fileRecorder.getInstrumentDir());
             excelField.setText(fileRecorder.getExcelDir());
             excelFile = new File(fileRecorder.getExcelDir());
-            repeatingRows = Boolean.parseBoolean(fileRecorder.getRepeatingRows());
+            repeatingRowsForms = Boolean.parseBoolean(fileRecorder.getRepeatingRowsForms());
+            repeatingRowsEvents = Boolean.parseBoolean(fileRecorder.getRepeatingRowsEvents());
             defaultValues = Boolean.parseBoolean(fileRecorder.getDefaultValues());
-            if (repeatingRows) {
-                columnSelector.setSelected(false);
-                rowSelector.setSelected(true);
+            
+            rowSelectorForms.setSelected(false);
+            rowSelectorEvents.setSelected(false);
+            columnSelector.setSelected(false);
+            if (repeatingRowsForms) {
+                rowSelectorForms.setSelected(true);
+            } else if (repeatingRowsEvents) {
+                rowSelectorEvents.setSelected(true);
+            } else {
+                columnSelector.setSelected(true);
             }
+            
             if (defaultValues) {
                 defaultValuesCheck.setSelected(true);
             }
@@ -347,14 +359,24 @@ public class MainSceneController implements Initializable {
     @FXML
     private void toggleRepeatingValues(ActionEvent event) {
         ToggleButton pressedButton = (ToggleButton) event.getSource();
-        if (pressedButton.equals(rowSelector)) {
+        if (pressedButton.equals(rowSelectorForms)) {
+            rowSelectorForms.setSelected(true);
+            rowSelectorEvents.setSelected(false);
             columnSelector.setSelected(false);
-            rowSelector.setSelected(true);
-            repeatingRows = true;
+            repeatingRowsForms = true;
+            repeatingRowsEvents = false;
+        }else if (pressedButton.equals(rowSelectorEvents)) {
+        	rowSelectorForms.setSelected(false);
+            rowSelectorEvents.setSelected(true);
+            columnSelector.setSelected(false);
+            repeatingRowsForms = false;
+            repeatingRowsEvents = true;
         } else if (pressedButton.equals(columnSelector)) {
+        	rowSelectorForms.setSelected(false);
+            rowSelectorEvents.setSelected(false);
             columnSelector.setSelected(true);
-            rowSelector.setSelected(false);
-            repeatingRows = false;
+            repeatingRowsForms = false;
+            repeatingRowsEvents = false;
         }
         checkReady();
     }
