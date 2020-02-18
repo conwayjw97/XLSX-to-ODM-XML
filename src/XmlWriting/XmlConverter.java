@@ -96,7 +96,7 @@ public class XmlConverter {
             for (String event : menuTracker.getChosenEvents()) {
                 debugReporter.writeLn("\nWorking on chosen event: " + event);
 
-                xmlWriter.createStudyEventData(event);
+                xmlWriter.createStudyEventData(event, 1);
 
                 // Iterate through the chosen forms
                 for (String form : menuTracker.getChosenForms()) {
@@ -189,12 +189,17 @@ public class XmlConverter {
             debugReporter.writeLn("Working on patientID: " + patientID);
 
             xmlWriter.createSubjectData(patientID);
-
+            int eventCounter = 0;
+            
             // Iterate through the chosen events
             for (String event : menuTracker.getChosenEvents()) {
                 debugReporter.writeLn("\nWorking on chosen event: " + event);
-
-                xmlWriter.createStudyEventData(event);
+                if(!formsInsteadOfEvents){
+                	xmlWriter.createStudyEventData(event, eventCounter++);
+                }
+                else{
+                	xmlWriter.createStudyEventData(event, 1);
+                }
 
                 // Iterate through the chosen forms
                 for (String form : menuTracker.getChosenForms()) {

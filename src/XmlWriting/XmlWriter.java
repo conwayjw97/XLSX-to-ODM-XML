@@ -99,12 +99,13 @@ public class XmlWriter {
     /**
      * Create a "StudyEventData" element and assign the event to it.
      * @param event 
+     * @param repeatKey 
      */
-    public void createStudyEventData(String event) {
+    public void createStudyEventData(String event, int repeatKey) {
         // Create the StudyEventData element and append it to the file
         studyEventData = document.createElement("StudyEventData");
         studyEventData.setAttribute("StudyEventOID", "Event." + event);
-        studyEventData.setAttribute("StudyEventRepeatKey", "1");
+        studyEventData.setAttribute("StudyEventRepeatKey", String.valueOf(repeatKey));
         studyEventData.setAttribute("redcap:UniqueEventName", event);
         subjectData.appendChild(studyEventData);
     }
