@@ -1,3 +1,4 @@
+// If you ever have to set up JavaFX again: https://www.youtube.com/watch?v=h_3AfQhjziw
 package GUI;
 
 import javafx.application.Application;

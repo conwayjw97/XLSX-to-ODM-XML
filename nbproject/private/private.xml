@@ -3,8 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/cigol/Documents/NetBeansProjects/Excel_To_ODM_XML/src/CsvParsing/DataDictionaryParser.java</file>
-            <file>file:/C:/Users/cigol/Documents/NetBeansProjects/Excel_To_ODM_XML/src/GUI/Excel_To_ODM_XML.java</file>
+            <file>file:/home/james/ZIH/XLSX-to-ODM-XML/src/GUI/FieldCustomizer.fxml</file>
+            <file>file:/home/james/ZIH/XLSX-to-ODM-XML/src/GUI/FieldCustomizerController.java</file>
+            <file>file:/home/james/ZIH/XLSX-to-ODM-XML/src/GUI/Excel_To_ODM_XML.java</file>
         </group>
     </open-files>
 </project-private>

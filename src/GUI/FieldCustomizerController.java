@@ -99,7 +99,7 @@ public class FieldCustomizerController implements Initializable {
     /**
      * Unused initialize method.
      * <p>
-     * Had to be implemented as parted of a class that implements Initializable.
+     * Had to be implemented as part of a class that implements Initializable.
      *
      * @param url Unused.
      * @param rb Unused.
