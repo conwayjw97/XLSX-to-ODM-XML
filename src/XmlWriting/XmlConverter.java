@@ -168,7 +168,7 @@ public class XmlConverter {
      * for each form, create the necessary number of repeating FormData elements
      * and fill them with their respective ItemData elements.
      */
-    public void convertRepeatingRows() {
+    public void convertRepeatingRows(boolean formsInsteadOfEvents) {
         boolean createGroupData;
 
         // Gather necessary data

@@ -70,7 +70,7 @@ public class FieldCustomizerController implements Initializable {
     private ProgressFileHandler progressFileHandler;
     private HashMap<String, ObservableList> eventToFormsList, formToVariablesList;
     private int globalIndex;
-    private boolean notBound, repeatingRows, defaultValues;
+    private boolean notBound, repeatingRowsForms, repeatingRowsEvents, defaultValues;
 
     @FXML
     private TreeView<String> excelFieldTree;
@@ -150,12 +150,18 @@ public class FieldCustomizerController implements Initializable {
                     menuTracker.collectVariableListData(redcapVariablesList.getItems());
 
                     updateMessage("Parsing Patient Data...");
-                    if (repeatingRows) {
+                    if (repeatingRowsForms) {
                         excelParser.parseRepeatingRows(menuTracker.getSelectedSheetToFields());
                         updateMessage("Converting to ODM XML...");
                         XmlConverter xmlConverter = new XmlConverter(menuTracker, instrumentParser, dictionaryParser,
                                 excelParser, xmlFile, defaultValues);
-                        xmlConverter.convertRepeatingRows();
+                        xmlConverter.convertRepeatingRows(true);
+                    } else if (repeatingRowsEvents) {
+                    	excelParser.parseRepeatingRows(menuTracker.getSelectedSheetToFields());
+                        updateMessage("Converting to ODM XML...");
+                        XmlConverter xmlConverter = new XmlConverter(menuTracker, instrumentParser, dictionaryParser,
+                                excelParser, xmlFile, defaultValues);
+                        xmlConverter.convertRepeatingRows(false);
                     } else {
                         excelParser.parseRepeatingColumns(menuTracker.getSelectedSheetToFields());
                         updateMessage("Converting to ODM XML...");
@@ -904,7 +910,7 @@ public class FieldCustomizerController implements Initializable {
      * ListView.
      * <p>
      * Update item and, if the program is working on Repeating Rows, remove the
-     * variable to it can't be selected again. Then call
+     * variable so it can't be selected again. Then call
      * checkAllVariablesChosen().
      *
      * @param event Event data for the interface action.
@@ -922,7 +928,7 @@ public class FieldCustomizerController implements Initializable {
         redcapVariablesList.setItems(listItems);
 
         // If working on Repeating Rows, remove the chosen Variable from the formToVariables list
-        if (repeatingRows) {
+        if (repeatingRowsForms || repeatingRowsEvents) {
             String correspondingForm = redcapFormsList.getItems().get(choiceIndex);
             ObservableList variablesList = formToVariablesList.get(correspondingForm);
             variablesList.remove(event.getNewValue().toString());
@@ -1014,8 +1020,12 @@ public class FieldCustomizerController implements Initializable {
         this.dictionaryParser = dictionaryParser;
     }
 
-    public void setRepeatingRows(boolean repeatingRows) {
-        this.repeatingRows = repeatingRows;
+    public void setRepeatingRowsForms(boolean repeatingRowsForms) {
+        this.repeatingRowsForms = repeatingRowsForms;
+    }
+    
+    public void setRepeatingRowsEvents(boolean repeatingRowsEvents) {
+        this.repeatingRowsEvents = repeatingRowsEvents;
     }
 
     public void setDefaultValues(boolean defaultValues) {
@@ -1027,7 +1037,7 @@ public class FieldCustomizerController implements Initializable {
      */
     public void bindScrollPanes() {
         if (notBound) {
-            // Bind the ListView scroll propertys
+            // Bind the ListView scroll properties
             ScrollBar bar1 = (ScrollBar) excelFieldTree.lookup(".scroll-bar");
             ScrollBar bar2 = (ScrollBar) redcapEventsList.lookup(".scroll-bar");
             ScrollBar bar3 = (ScrollBar) redcapFormsList.lookup(".scroll-bar");
