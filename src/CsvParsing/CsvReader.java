@@ -37,7 +37,6 @@ public class CsvReader {
      * I.e: [[cell, cell, cell], [cell, cell, cell], ...]
      */
     private ArrayList<ArrayList> rows;
-    
     private ArrayList<String> cells;
     private HashMap<String, Integer> headerToIndex;
     private HashMap<Integer, String> indexToHeader;
@@ -67,11 +66,12 @@ public class CsvReader {
             indexToHeader = new HashMap<>();
             List<CSVRecord> csvRows = csvParser.getRecords();
 
-            // Iterate throught the first row and get the mappings for the headers
+            // Iterate through the first row and get the mappings for the headers
             CSVRecord header = csvRows.get(0);
             for (int i = 0; i <= header.size() - 1; i++) {
-                headerToIndex.put(header.get(i), i);
-                indexToHeader.put(i, header.get(i));
+            	System.out.println(header.get(i).trim());
+                headerToIndex.put(header.get(i).trim(), i);
+                indexToHeader.put(i, header.get(i).trim());
             }
 
             rows = new ArrayList<>();
