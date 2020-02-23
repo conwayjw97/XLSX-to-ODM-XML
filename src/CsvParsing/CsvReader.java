@@ -69,7 +69,6 @@ public class CsvReader {
             // Iterate through the first row and get the mappings for the headers
             CSVRecord header = csvRows.get(0);
             for (int i = 0; i <= header.size() - 1; i++) {
-            	System.out.println(header.get(i).trim());
                 headerToIndex.put(header.get(i).trim(), i);
                 indexToHeader.put(i, header.get(i).trim());
             }

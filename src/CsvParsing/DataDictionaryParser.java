@@ -65,7 +65,9 @@ public class DataDictionaryParser {
         formToVariables = new HashMap<>();
         variableToDefault = new HashMap<>();
         String previousForm = "";
+        System.out.println(headerToIndex);
         int formIndex = headerToIndex.get("Form Name");
+        System.out.println(formIndex);
         int variableIndex = headerToIndex.get("Variable / Field Name");
         int typeIndex = headerToIndex.get("Field Type");
         int choiceIndex = headerToIndex.get("Choices, Calculations, OR Slider Labels");
@@ -90,6 +92,7 @@ public class DataDictionaryParser {
                 if (!previousForm.isEmpty()) {
                     formToVariables.put(previousForm, variables);
                 }
+                System.out.println(row.get(formIndex));
                 previousForm = row.get(formIndex);
                 variables = new ArrayList<>();
 
@@ -126,6 +129,7 @@ public class DataDictionaryParser {
         if (!previousForm.isEmpty()) {
             formToVariables.put(previousForm, variables);
         }
+        System.out.println(formToVariables);
     }
 
     public ArrayList<String> getVariables() {

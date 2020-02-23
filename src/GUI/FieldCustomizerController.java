@@ -969,10 +969,13 @@ public class FieldCustomizerController implements Initializable {
         ArrayList<String> chosenForms = menuTracker.getChosenForms();
         HashMap<String, ArrayList> formToVariables = dictionaryParser.getFormToVariables();
         // Iterate through the unique forms chosen by the user
+        System.out.println(chosenForms);
         for (String chosenForm : chosenForms) {
             ObservableList variablesList = FXCollections.observableArrayList();
+            System.out.println(formToVariables);
             ArrayList<String> correspondingVariables = formToVariables.get(chosenForm);
             // Iterate through the variables that correspond to this form
+            System.out.println(correspondingVariables);
             for (int i = 0; i < correspondingVariables.size(); i++) {
                 variablesList.add(correspondingVariables.get(i));
             }
