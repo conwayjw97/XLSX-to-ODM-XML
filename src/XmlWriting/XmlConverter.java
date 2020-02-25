@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.w3c.dom.Element;
 
 /**
  * <h1>User Choice and Parsed data converter for XML writing.</h1>
@@ -90,13 +91,13 @@ public class XmlConverter {
             debugReporter.writeLn("-----------------------------------------------------------");
             debugReporter.writeLn("Working on patientID: " + patientID);
 
-            xmlWriter.createSubjectData(patientID);
+            Element subjectData = xmlWriter.createSubjectData(patientID);
 
             // Iterate through the chosen events
             for (String event : menuTracker.getChosenEvents()) {
                 debugReporter.writeLn("\nWorking on chosen event: " + event);
 
-                xmlWriter.createStudyEventData(event, 1);
+                Element studyEventData = xmlWriter.createStudyEventData(event, 1, subjectData);
 
                 // Iterate through the chosen forms
                 for (String form : menuTracker.getChosenForms()) {
@@ -113,7 +114,7 @@ public class XmlConverter {
                             // we use this variable to check if a new ItemGroupData element 
                             // needs to be made to put the new ItemData elements in
                             createGroupData = true;
-                            xmlWriter.createFormData(form, i + 1);
+                            Element formData = xmlWriter.createFormData(form, i + 1, studyEventData);
                             ArrayList<String> chosenVariables = formToVariables.get(form);
 
                             // Iterate through the chosen variables
@@ -126,7 +127,7 @@ public class XmlConverter {
                                 visitedFields.add(results.get("field"));
 
                                 // Add them to the XML
-                                xmlWriter.createItemData(variable, form, createGroupData, results.get("value"));
+                                xmlWriter.createItemData(variable, form, createGroupData, results.get("value"), formData);
                                 createGroupData = false;
                             }
 
@@ -140,7 +141,7 @@ public class XmlConverter {
                                         debugReporter.writeLn("\nWorking on unchosen variable: " + variable);
 
                                         // Find the corresponding variable and field   
-                                        xmlWriter.createItemData(variable, form, createGroupData, variableToDefault.get(variable));
+                                        xmlWriter.createItemData(variable, form, createGroupData, variableToDefault.get(variable), formData);
                                         createGroupData = false;
                                     }
                                 }
@@ -188,81 +189,112 @@ public class XmlConverter {
             debugReporter.writeLn("-----------------------------------------------------------");
             debugReporter.writeLn("Working on patientID: " + patientID);
 
-            xmlWriter.createSubjectData(patientID);
-            int eventCounter = 0;
+            Element subjectData = xmlWriter.createSubjectData(patientID);
             
-            // Iterate through the chosen events
-            for (String event : menuTracker.getChosenEvents()) {
-                debugReporter.writeLn("\nWorking on chosen event: " + event);
-                if(!formsInsteadOfEvents){
-                	xmlWriter.createStudyEventData(event, eventCounter++);
-                }
-                else{
-                	xmlWriter.createStudyEventData(event, 1);
-                }
-
-                // Iterate through the chosen forms
-                for (String form : menuTracker.getChosenForms()) {
-
-                    // If this form corresponds to the current event
-                    if (eventToForm.get(event).contains(form)) {
-                        debugReporter.writeLn("\nWorking on chosen form: " + form);
-                        ArrayList<String> chosenVariables = formToVariables.get(form);
-                        int repeatingForms = 0;
-
-                        // Iterate through the chosen variables to count how many FormData elements are needed
-                        // for the repeating values
-                        debugReporter.writeLn("\nCounting FormData elements to be made.");
-                        for (String variable : chosenVariables) {
-                            debugReporter.writeLn("\nWorking on chosen variable: " + variable);
-
-                            ArrayList<String> values = fieldFinderRepeatingRows(variable, sheetToFieldToVariable,
-                                    patientToSheets, patientID);
-                            if (values.size() > repeatingForms) {
-                                repeatingForms = values.size();
-                            }
-                        }
-
-                        // Create a FormData element for every repeating value and fill it with the relevant data
-                        debugReporter.writeLn("\nCreating FormData elements.");
-                        for (int i = 0; i < repeatingForms; i++) {
-                            // If this is the first ItemData to be put in this FormData then
-                            // we use this variable to check if a new ItemGroupData element 
-                            // needs to be made to put the new ItemData elements in
-                            createGroupData = true;
-                            xmlWriter.createFormData(form, i + 1);
-
-                            for (String variable : chosenVariables) {
-                                debugReporter.writeLn("\nWorking on chosen variable: " + variable);
-                                // Find the corresponding variable and field     
-                                ArrayList<String> values = fieldFinderRepeatingRows(variable, sheetToFieldToVariable,
-                                        patientToSheets, patientID);
-                                // If the values List isn't empty, and if it isn't smaller than the current iteration, and
-                                // the value itself isn't null, add it to the XML
-                                if (!values.isEmpty() && values.size() > i && values.get(i) != null) {
-                                    xmlWriter.createItemData(variable, form, createGroupData, values.get(i));
-                                    createGroupData = false;
-                                }
-                            }
-
-                            // If default values have to be added too
-                            if (defaultValues) {
-                                List<String> unchosenVariables = formToAllVariables.get(form);
-                                unchosenVariables.removeAll(chosenVariables);
-                                // Iterate through the unchosen variables
-                                for (String variable : unchosenVariables) {
-                                    if (variableToDefault.keySet().contains(variable)) {
-                                        debugReporter.writeLn("\nWorking on unchosen variable: " + variable);
-
-                                        // Add the default value variable to the XML
-                                        xmlWriter.createItemData(variable, form, createGroupData, variableToDefault.get(variable));
-                                        createGroupData = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+            // If this is for repeating form rows
+            if(formsInsteadOfEvents){
+	            // Iterate through the chosen events
+	            for (String event : menuTracker.getChosenEvents()) {
+	                debugReporter.writeLn("\nWorking on chosen event: " + event);
+	                Element studyEventData = xmlWriter.createStudyEventData(event, 1, subjectData);
+	
+	                // Iterate through the chosen forms
+	                for (String form : menuTracker.getChosenForms()) {
+	
+	                    // If this form corresponds to the current event
+	                    if (eventToForm.get(event).contains(form)) {
+	                        debugReporter.writeLn("\nWorking on chosen form: " + form);
+	                        ArrayList<String> chosenVariables = formToVariables.get(form);
+	                        int repeatingForms = 0;
+	
+	                        // Iterate through the chosen variables to count how many FormData elements are needed
+	                        // for the repeating values
+	                        debugReporter.writeLn("\nCounting FormData elements to be made.");
+	                        for (String variable : chosenVariables) {
+	                            debugReporter.writeLn("\nWorking on chosen variable: " + variable);
+	
+	                            ArrayList<String> values = fieldFinderRepeatingRows(variable, sheetToFieldToVariable,
+	                                    patientToSheets, patientID);
+	                            if (values.size() > repeatingForms) {
+	                                repeatingForms = values.size();
+	                            }
+	                        }
+	
+	                        // Create a FormData element for every repeating value and fill it with the relevant data
+	                        debugReporter.writeLn("\nCreating FormData elements.");
+	                        for (int i = 0; i < repeatingForms; i++) {
+	                            // If this is the first ItemData to be put in this FormData then
+	                            // we use this variable to check if a new ItemGroupData element 
+	                            // needs to be made to put the new ItemData elements in
+	                            createGroupData = true;
+	                            Element formData = xmlWriter.createFormData(form, i + 1, studyEventData);
+	
+	                            for (String variable : chosenVariables) {
+	                                debugReporter.writeLn("\nWorking on chosen variable: " + variable);
+	                                // Find the corresponding variable and field     
+	                                ArrayList<String> values = fieldFinderRepeatingRows(variable, sheetToFieldToVariable,
+	                                        patientToSheets, patientID);
+	                                // If the values List isn't empty, and if it isn't smaller than the current iteration, and
+	                                // the value itself isn't null, add it to the XML
+	                                if (!values.isEmpty() && values.size() > i && values.get(i) != null) {
+	                                    xmlWriter.createItemData(variable, form, createGroupData, values.get(i), formData);
+	                                    createGroupData = false;
+	                                }
+	                            }
+	
+	                            // If default values have to be added too
+	                            if (defaultValues) {
+	                                List<String> unchosenVariables = formToAllVariables.get(form);
+	                                unchosenVariables.removeAll(chosenVariables);
+	                                // Iterate through the unchosen variables
+	                                for (String variable : unchosenVariables) {
+	                                    if (variableToDefault.keySet().contains(variable)) {
+	                                        debugReporter.writeLn("\nWorking on unchosen variable: " + variable);
+	
+	                                        // Add the default value variable to the XML
+	                                        xmlWriter.createItemData(variable, form, createGroupData, variableToDefault.get(variable), formData);
+	                                        createGroupData = false;
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+            }
+            // Otherwise, this is for repeating event rows
+            else{
+            	// Iterate through the chosen events
+	            for (String event : menuTracker.getChosenEvents()) {
+	                debugReporter.writeLn("\nWorking on chosen event: " + event);
+	                int eventCounter = 0;
+	                xmlWriter.createStudyEventData(event, 1, subjectData);
+	                List<String> seenForms = new ArrayList<String>();
+	
+	                // Iterate through the chosen forms
+	                for (String form : menuTracker.getChosenForms()) {
+	
+	                    // If this form corresponds to the current event
+	                    if (eventToForm.get(event).contains(form)) {
+	                        debugReporter.writeLn("\nWorking on chosen form: " + form);
+	                        ArrayList<String> chosenVariables = formToVariables.get(form);
+	                        int repeatingForms = 0;
+	
+	                        // Iterate through the chosen variables to count how many FormData elements are needed
+	                        // for the repeating values
+	                        debugReporter.writeLn("\nCounting FormData elements to be made.");
+	                        for (String variable : chosenVariables) {
+	                            debugReporter.writeLn("\nWorking on chosen variable: " + variable);
+	
+	                            ArrayList<String> values = fieldFinderRepeatingRows(variable, sheetToFieldToVariable,
+	                                    patientToSheets, patientID);
+	                            if (values.size() > repeatingForms) {
+	                                repeatingForms = values.size();
+	                            }
+	                        }
+	                    }
+	                }
+	            }
             }
         }
 

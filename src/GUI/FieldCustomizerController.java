@@ -932,7 +932,7 @@ public class FieldCustomizerController implements Initializable {
             String correspondingForm = redcapFormsList.getItems().get(choiceIndex);
             ObservableList variablesList = formToVariablesList.get(correspondingForm);
             variablesList.remove(event.getNewValue().toString());
-            formToVariablesList.put(correspondingForm, variablesList);
+//            formToVariablesList.put(correspondingForm, variablesList);
         }
 
         // Check whether all the variables have been chosen

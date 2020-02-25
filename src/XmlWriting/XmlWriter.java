@@ -36,7 +36,7 @@ public class XmlWriter {
     /**
      * Previous XML element to append data to.
      */
-    private Element clinicalData, subjectData, studyEventData, formData, itemGroupData, itemData;
+    private Element clinicalData, subjectData, itemGroupData, itemData;
 
     /**
      * Get the XML file to write to and create a DocumentBuilder to write to
@@ -89,11 +89,12 @@ public class XmlWriter {
      * Create a "SubjectData" element and assign the patientID to it.
      * @param patientID 
      */
-    public void createSubjectData(String patientID) {
+    public Element createSubjectData(String patientID) {
         // Create the SubjectData element and append it to the file
         subjectData = document.createElement("SubjectData");
         subjectData.setAttribute("SubjectKey", patientID);
         clinicalData.appendChild(subjectData);
+        return subjectData;
     }
 
     /**
@@ -101,13 +102,14 @@ public class XmlWriter {
      * @param event 
      * @param repeatKey 
      */
-    public void createStudyEventData(String event, int repeatKey) {
+    public Element createStudyEventData(String event, int repeatKey, Element subjectData) {
         // Create the StudyEventData element and append it to the file
-        studyEventData = document.createElement("StudyEventData");
+        Element studyEventData = document.createElement("StudyEventData");
         studyEventData.setAttribute("StudyEventOID", "Event." + event);
         studyEventData.setAttribute("StudyEventRepeatKey", String.valueOf(repeatKey));
         studyEventData.setAttribute("redcap:UniqueEventName", event);
         subjectData.appendChild(studyEventData);
+        return studyEventData;
     }
 
     /**
@@ -115,12 +117,13 @@ public class XmlWriter {
      * @param form
      * @param repeatKey 
      */
-    public void createFormData(String form, int repeatKey) {
+    public Element createFormData(String form, int repeatKey, Element studyEventData) {
         // Create the FormData element with its repeat key and append it to the file
-        formData = document.createElement("FormData");
+        Element formData = document.createElement("FormData");
         formData.setAttribute("FormOID", "Form." + form);
         formData.setAttribute("FormRepeatKey", String.valueOf(repeatKey));
         studyEventData.appendChild(formData);
+        return formData;
     }
 
     /**
@@ -132,7 +135,7 @@ public class XmlWriter {
      * @param createGroupData
      * @param value 
      */
-    public void createItemData(String variable, String form, boolean createGroupData, String value) {
+    public void createItemData(String variable, String form, boolean createGroupData, String value, Element formData) {
         // If a new ItemGroupData element needs to be created to encase the following ItemData elements
         // then create one and append it
         if (createGroupData) {
