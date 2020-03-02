@@ -31,7 +31,8 @@ public class DebugReporter {
     public DebugReporter(String debugFileName) {
         if (MainSceneController.DEBUG) {
             debugFile = new File("Debug\\" + debugFileName);
-            debugFile.getParentFile().mkdirs();
+            System.out.println(debugFile.toString());
+//            debugFile.getParentFile().mkdirs();
             try {
                 debugWriter = new BufferedWriter(new FileWriter(debugFile));
             } catch (IOException ex) {

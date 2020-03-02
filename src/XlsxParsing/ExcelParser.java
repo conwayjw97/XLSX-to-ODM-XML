@@ -156,7 +156,7 @@ public class ExcelParser {
                             for (int l = 0; l < cells.size(); l++) {
 
                                 // If this cell belongs to a field that has been selected on the GUI
-                                if (indexToField.get(l) != null && selectedFields.contains(indexToField.get(l).toString()) && (cells.get(l) != null)) {
+                            	if (indexToField.get(l) != null && selectedFields.contains(indexToField.get(l).toString()) && (cells.get(l) != null)) {
                                     debugReporter.writeLn("Storing cell: " + cells.get(l).toString() + ", from field: " + indexToField.get(l).toString());
                                     fieldToValue.put(indexToField.get(l).toString(), cells.get(l).toString());
                                 }
@@ -235,7 +235,8 @@ public class ExcelParser {
                             for (int l = 0; l < cells.size(); l++) {
 
                                 // If this cell belongs to a field that has been selected on the GUI
-                                if (indexToField.get(l) != null && selectedFields.contains(indexToField.get(l).toString()) && cells.get(l) != null) {
+//                                if (indexToField.get(l) != null && selectedFields.contains(indexToField.get(l).toString()) && cells.get(l) != null) {
+                            	if (indexToField.get(l) != null && selectedFields.contains(indexToField.get(l).toString())) {
                                     debugReporter.writeLn("Storing cell: " + cells.get(l).toString() + ", from field: " + indexToField.get(l).toString());
 
                                     // If this cell is for a new field then create a new values ArrayList for it

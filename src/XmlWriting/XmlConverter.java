@@ -265,6 +265,7 @@ public class XmlConverter {
             
             // Otherwise, this is for repeating event rows
             else{
+            	System.out.println("patientToSheets: " + patientToSheets.toString());
             	// Iterate through the chosen events
 	            for (String event : menuTracker.getChosenEvents()) {
 	                debugReporter.writeLn("\nWorking on chosen event: " + event);
@@ -275,7 +276,6 @@ public class XmlConverter {
 	                	
 	                    // If this form corresponds to the current event
 	                    if (eventToForm.get(event).contains(form)) {
-	                    	System.out.println("\nWorking on chosen form: " + form);
 	                        debugReporter.writeLn("\nWorking on chosen form: " + form);
 	                        ArrayList<String> chosenVariables = formToVariables.get(form);
 	                        int repeatingForms = 0;
@@ -284,7 +284,6 @@ public class XmlConverter {
 	                        // for the repeating values
 	                        debugReporter.writeLn("\nCounting FormData elements to be made.");
 	                        for (String variable : chosenVariables) {
-	                        	System.out.println("\nWorking on chosen variable: " + variable);
 	                            debugReporter.writeLn("\nWorking on chosen variable: " + variable);
 	
 	                            ArrayList<String> values = fieldFinderRepeatingRows(variable, sheetToFieldToVariable,
@@ -296,35 +295,32 @@ public class XmlConverter {
 	                        
 	                        // Create a FormData element for every repeating value and fill it with the relevant data
 	                        debugReporter.writeLn("\nCreating FormData elements.");
-	                        System.out.println("\nCreating FormData elements.");
 	                        for (int i = 0; i < repeatingForms; i++) {
-	                        	System.out.println("\ni:" + i);
 	                            // If this is the first ItemData to be put in this FormData then
 	                            // we use this variable to check if a new ItemGroupData element 
 	                            // needs to be made to put the new ItemData elements in
 	                            createGroupData = true;
 	                            Element formData;
-	                            System.out.println("\nstudyEvents:" + studyEvents);
 	                            if(studyEvents.isEmpty() || studyEvents.size() <= i){
-	                            	System.out.println("\n1");
+	                            	debugReporter.writeLn("\nCreating new study event: " + (i+1));
 	                            	Element studyEventData = xmlWriter.createStudyEventData(event, i+1, subjectData);
 	                            	studyEvents.add(studyEventData);
 	                            	formData = xmlWriter.createFormData(form, 1, studyEventData);
 	                            }
 	                            else{
-	                            	System.out.println("\n2");
 	                            	formData = xmlWriter.createFormData(form, 1, studyEvents.get(i));
 	                            }
 	
 	                            for (String variable : chosenVariables) {
-	                            	System.out.println("\nWorking on chosen variable: " + variable);
 	                                debugReporter.writeLn("\nWorking on chosen variable: " + variable);
-	                                // Find the corresponding variable and field     
+	                                // Find the corresponding variable and field   
 	                                ArrayList<String> values = fieldFinderRepeatingRows(variable, sheetToFieldToVariable,
 	                                        patientToSheets, patientID);
+	                                System.out.println("variable: " + variable);
+	                                System.out.println("values: " + values);
 	                                // If the values List isn't empty, and if it isn't smaller than the current iteration, and
 	                                // the value itself isn't null, add it to the XML
-	                                if (!values.isEmpty() && values.size() > i && values.get(i) != null) {
+	                                if (!values.isEmpty() && values.size() > i && values.get(i) != null && !values.get(i).equals("&#10;")) {
 	                                    xmlWriter.createItemData(variable, form, createGroupData, values.get(i), formData);
 	                                    createGroupData = false;
 	                                }
@@ -337,7 +333,6 @@ public class XmlConverter {
 	                                // Iterate through the unchosen variables
 	                                for (String variable : unchosenVariables) {
 	                                    if (variableToDefault.keySet().contains(variable)) {
-	                                    	System.out.println("\nWorking on chosen variable: " + variable);
 	                                        debugReporter.writeLn("\nWorking on unchosen variable: " + variable);
 	
 	                                        // Add the default value variable to the XML
