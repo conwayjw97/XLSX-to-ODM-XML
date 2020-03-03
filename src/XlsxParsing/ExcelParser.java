@@ -237,17 +237,25 @@ public class ExcelParser {
                                 // If this cell belongs to a field that has been selected on the GUI
 //                                if (indexToField.get(l) != null && selectedFields.contains(indexToField.get(l).toString()) && cells.get(l) != null) {
                             	if (indexToField.get(l) != null && selectedFields.contains(indexToField.get(l).toString())) {
-                                    debugReporter.writeLn("Storing cell: " + cells.get(l).toString() + ", from field: " + indexToField.get(l).toString());
-
+                                    String cellValue;
+                                    if(cells.get(l) != null){
+                                    	cellValue = cells.get(l).toString();
+                                    }
+                                    else{
+                                    	cellValue = "";
+                                    }
+                                    
+                                    debugReporter.writeLn("Storing cell: " + cellValue + ", from field: " + indexToField.get(l).toString());
+                                    
                                     // If this cell is for a new field then create a new values ArrayList for it
                                     if (fieldToValues.get(indexToField.get(l).toString()) == null) {
                                         values = new ArrayList<>();
-                                        values.add(cells.get(l).toString());
+                                        values.add(cellValue);
                                         fieldToValues.put(indexToField.get(l).toString(), values);
                                     } // If this cell is for a field that has been checked before then add it to the values ArrayList
                                     else {
                                         values = fieldToValues.get(indexToField.get(l).toString());
-                                        values.add(cells.get(l).toString());
+                                        values.add(cellValue);
                                         fieldToValues.put(indexToField.get(l).toString(), values);
                                     }
                                 }
