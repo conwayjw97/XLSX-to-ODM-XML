@@ -53,11 +53,8 @@ public class DataDictionaryParser {
     public void parse() throws Exception {
         HashMap<String, Integer> headerToIndex = reader.getHeaderToIndex();
         System.out.println("headerToIndex:" + headerToIndex);
-        if (headerToIndex.get("Form Name") == null 
-        		|| headerToIndex.get("﻿Variable / Field Name") == null
-                || headerToIndex.get("Field Type") == null 
-                || headerToIndex.get("Choices, Calculations, OR Slider Labels") == null
-                || headerToIndex.get("Field Annotation") == null) {
+        if (headerToIndex.get("Form Name") == null || headerToIndex.get("﻿\"Variable / Field Name\"") == null
+                || headerToIndex.get("Field Type") == null || headerToIndex.get("Choices, Calculations, OR Slider Labels") == null){
             throw new Exception("Chosen Data Dictionary is not valid.");
         }
         ArrayList<String> row;
@@ -69,7 +66,7 @@ public class DataDictionaryParser {
         System.out.println(headerToIndex);
         int formIndex = headerToIndex.get("Form Name");
         System.out.println(formIndex);
-        int variableIndex = headerToIndex.get("﻿Variable / Field Name");
+        int variableIndex = headerToIndex.get("﻿\"Variable / Field Name\"");
         int typeIndex = headerToIndex.get("Field Type");
         int choiceIndex = headerToIndex.get("Choices, Calculations, OR Slider Labels");
         int defaultIndex = headerToIndex.get("Field Annotation");
