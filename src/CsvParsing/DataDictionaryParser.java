@@ -52,6 +52,7 @@ public class DataDictionaryParser {
      */
     public void parse() throws Exception {
         HashMap<String, Integer> headerToIndex = reader.getHeaderToIndex();
+        System.out.println(headerToIndex);
         if (headerToIndex.get("Form Name") == null || headerToIndex.get("﻿\"Variable / Field Name\"") == null
                 || headerToIndex.get("Field Type") == null || headerToIndex.get("Choices, Calculations, OR Slider Labels") == null
                 || headerToIndex.get("Field Annotation") == null) {
