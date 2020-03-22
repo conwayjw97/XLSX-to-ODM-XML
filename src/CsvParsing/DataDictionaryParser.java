@@ -53,11 +53,28 @@ public class DataDictionaryParser {
     public void parse() throws Exception {
         HashMap<String, Integer> headerToIndex = reader.getHeaderToIndex();
         System.out.println(headerToIndex);
-        if (headerToIndex.get("Form Name") == null || headerToIndex.get("﻿\"Variable / Field Name\"") == null
-                || headerToIndex.get("Field Type") == null || headerToIndex.get("Choices, Calculations, OR Slider Labels") == null
-                || headerToIndex.get("Field Annotation") == null) {
-            throw new Exception("Chosen Data Dictionary is not valid.");
+        int keyCheck = 0;
+        String variableFieldNameKey = null;
+        for(String key : headerToIndex.keySet()){
+        	if(key.contains("Form Name") || key.contains("Variable / Field Name")
+        		|| key.contains("Field Type") || key.contains("Choices, Calculations, OR Slider Labels")
+        		|| key.contains("Field Annotation")){
+        		keyCheck++;
+        	}
+        	if(key.contains("Variable / Field Name")){
+        		variableFieldNameKey = key;
+        		System.out.println("Variable / Field Name key: " + variableFieldNameKey);
+        	}
         }
+        if(keyCheck < 5){
+        	throw new Exception("Chosen Data Dictionary is not valid, lacks all necessary headers.");
+        }
+//        if (headerToIndex.get("Form Name") == null || headerToIndex.get("﻿\"Variable / Field Name\"") == null
+//                || headerToIndex.get("Field Type") == null || headerToIndex.get("Choices, Calculations, OR Slider Labels") == null
+//                || headerToIndex.get("Field Annotation") == null) {
+//            throw new Exception("Chosen Data Dictionary is not valid.");
+//        }
+        
         ArrayList<String> row;
         variables = new ArrayList<>();
         forms = new ArrayList<>();
@@ -65,7 +82,7 @@ public class DataDictionaryParser {
         variableToDefault = new HashMap<>();
         String previousForm = "";
         int formIndex = headerToIndex.get("Form Name");
-        int variableIndex = headerToIndex.get("﻿\"Variable / Field Name\"");
+        int variableIndex = headerToIndex.get(variableFieldNameKey);
         int typeIndex = headerToIndex.get("Field Type");
         int choiceIndex = headerToIndex.get("Choices, Calculations, OR Slider Labels");
         int defaultIndex = headerToIndex.get("Field Annotation");
