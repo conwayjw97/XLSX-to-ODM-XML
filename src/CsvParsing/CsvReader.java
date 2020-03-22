@@ -30,13 +30,14 @@ public class CsvReader {
 
     private File csvFile;
     private BufferedReader reader;
-    
+
     /**
      * ArrayList containing cells ArrayLists.
      * <p>
      * I.e: [[cell, cell, cell], [cell, cell, cell], ...]
      */
     private ArrayList<ArrayList> rows;
+
     private ArrayList<String> cells;
     private HashMap<String, Integer> headerToIndex;
     private HashMap<Integer, String> indexToHeader;
@@ -66,11 +67,11 @@ public class CsvReader {
             indexToHeader = new HashMap<>();
             List<CSVRecord> csvRows = csvParser.getRecords();
 
-            // Iterate through the first row and get the mappings for the headers
+            // Iterate throught the first row and get the mappings for the headers
             CSVRecord header = csvRows.get(0);
             for (int i = 0; i <= header.size() - 1; i++) {
-                headerToIndex.put(header.get(i).trim(), i);
-                indexToHeader.put(i, header.get(i).trim());
+                headerToIndex.put(header.get(i), i);
+                indexToHeader.put(i, header.get(i));
             }
 
             rows = new ArrayList<>();

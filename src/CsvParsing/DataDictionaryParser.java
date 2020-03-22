@@ -19,7 +19,7 @@ public class DataDictionaryParser {
     private CsvReader reader;
     private ArrayList<String> variables;
     private ArrayList<String> forms;
-    
+
     /**
      * Maps the forms to their corresponding variables.
      * <p>
@@ -52,9 +52,9 @@ public class DataDictionaryParser {
      */
     public void parse() throws Exception {
         HashMap<String, Integer> headerToIndex = reader.getHeaderToIndex();
-        System.out.println("headerToIndex:" + headerToIndex);
         if (headerToIndex.get("Form Name") == null || headerToIndex.get("﻿\"Variable / Field Name\"") == null
-                || headerToIndex.get("Field Type") == null || headerToIndex.get("Choices, Calculations, OR Slider Labels") == null){
+                || headerToIndex.get("Field Type") == null || headerToIndex.get("Choices, Calculations, OR Slider Labels") == null
+                || headerToIndex.get("Field Annotation") == null) {
             throw new Exception("Chosen Data Dictionary is not valid.");
         }
         ArrayList<String> row;
@@ -63,9 +63,7 @@ public class DataDictionaryParser {
         formToVariables = new HashMap<>();
         variableToDefault = new HashMap<>();
         String previousForm = "";
-        System.out.println(headerToIndex);
         int formIndex = headerToIndex.get("Form Name");
-        System.out.println(formIndex);
         int variableIndex = headerToIndex.get("﻿\"Variable / Field Name\"");
         int typeIndex = headerToIndex.get("Field Type");
         int choiceIndex = headerToIndex.get("Choices, Calculations, OR Slider Labels");
@@ -90,7 +88,6 @@ public class DataDictionaryParser {
                 if (!previousForm.isEmpty()) {
                     formToVariables.put(previousForm, variables);
                 }
-                System.out.println(row.get(formIndex));
                 previousForm = row.get(formIndex);
                 variables = new ArrayList<>();
 
@@ -127,7 +124,6 @@ public class DataDictionaryParser {
         if (!previousForm.isEmpty()) {
             formToVariables.put(previousForm, variables);
         }
-        System.out.println(formToVariables);
     }
 
     public ArrayList<String> getVariables() {
@@ -141,7 +137,7 @@ public class DataDictionaryParser {
     public HashMap<String, ArrayList> getFormToVariables() {
         return formToVariables;
     }
-    
+
     public HashMap<String, String> getVariableToDefault(){
         return variableToDefault;
     }
